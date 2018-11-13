@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+
+h1 {
+  font-family: 'Lobster', cursive;
+  /* color: white; */
+}
+
+.navbar {
+  postion: absolute;
+  width: auto;
+  /* background-color: blue; */
+  height: 50%;
+}
+
+.login-container{
+  /* height: 300px;
+  width: 300px;
+  background-color: red; */
+}

@@ -1,0 +1,389 @@
+document.addEventListener('DOMContentLoaded', init);
+
+const navbar = document.querySelector(".navbar");
+const loginCont = document.querySelector(".login-container");
+const searchCont = document.querySelector(".search-container");
+const jobListCont = document.querySelector(".job-listing-container");
+const profileCont = document.querySelector(".user-profile-container");
+const jobDetailCont = document.querySelector(".job-detail-container");
+
+function init(){
+  createLogo();
+  // createSearchButton();
+  createLoginSignUp();
+  handleJobListClicks();
+  handleSaveButtonClicks()
+}
+
+function createSearchButton(){
+  let search = document.createElement('div');
+  search.className = "search-toggle";
+  search.innerHTML = "Search";
+  search.addEventListener('click', function(){
+    if (!event.target.className.includes("opened")){
+      event.target.className += " opened";
+      // createSearchForm();
+    }
+  })
+  navbar.appendChild(search);
+}
+
+function createLogo(){
+  let logo = document.createElement('h1');
+  logo.className = "logo-text";
+  logo.innerText = "Git a Job";
+  navbar.appendChild(logo);
+}
+
+function createLoginSignUp(){
+  let loginBtn = document.createElement('button');
+  let signBtn = document.createElement('button');
+  loginBtn.id = "log-in";
+  signBtn.id = "sign-in";
+  loginBtn.innerText = "Log In";
+  signBtn.innerText = "Sign Up";
+  loginCont.appendChild(loginBtn);
+  loginCont.appendChild(signBtn);
+  loginCont.addEventListener('click', function(e){
+    if(event.target.id == 'log-in'){
+      loginCont.innerHTML = '';
+      createLoginForm();
+    }
+    if(event.target.id == 'sign-in'){
+      loginCont.innerHTML = '';
+      createSignUpForm();
+    }
+  })
+}
+
+function createLoginForm(){
+  let loginForm = document.createElement('form');
+  loginForm.className = "login-form";
+  let usernameField = document.createElement('input');
+  usernameField.placeholder = "Enter User Name Here";
+  usernameField.className = "user-name-input";
+  let submitButton = document.createElement('button');
+  submitButton.type = "submit";
+  submitButton.innerText = "Log In";
+  loginForm.appendChild(usernameField);
+  loginForm.appendChild(submitButton);
+  loginCont.appendChild(loginForm);
+  handleLogin(loginForm);
+}
+
+function handleLogin(loginForm){
+  loginForm.addEventListener('submit', function(){
+    event.preventDefault();
+    let user = document.querySelector(".user-name-input").value
+    pullUserFromDB(user);
+})
+}
+
+function pullUserFromDB(user){
+  fetch(`http://localhost:3000/users/${user}`)
+    .then(res => res.json())
+    .then(json => {loginCont.innerHTML = '';
+      createSearchForm();
+      greetUser(json.user)})
+}
+
+function createSignUpForm(){
+  let signUpForm = document.createElement('form');
+  signUpForm.className = "sign-up-form";
+  let usernameField = document.createElement('input');
+  usernameField.placeholder = "Enter User Name Here";
+  usernameField.className = "user-name-input"
+  let fullNameField = document.createElement('input');
+  fullNameField.placeholder = "Enter Full Name Here";
+  fullNameField.className = "full-name-input"
+  let addressField = document.createElement('input');
+  addressField.placeholder = "Enter Address Here";
+  addressField.className = "address-input"
+  let phoneField = document.createElement('input');
+  phoneField.placeholder = "Enter Phone Number Here";
+  phoneField.className = "phone-input"
+  let emailField = document.createElement('input');
+  emailField.placeholder = "Enter Email Address Here";
+  emailField.className = "email-input"
+  let submitButton = document.createElement('button');
+  submitButton.type = "submit";
+  submitButton.innerText = "Sign Up";
+  signUpForm.appendChild(fullNameField);
+  signUpForm.appendChild(usernameField);
+  signUpForm.appendChild(addressField);
+  signUpForm.appendChild(phoneField);
+  signUpForm.appendChild(emailField);
+  signUpForm.appendChild(submitButton);
+  loginCont.appendChild(signUpForm);
+  handleSignUp(signUpForm);
+}
+
+function handleSignUp(signUpForm){
+  signUpForm.addEventListener('submit', function(){
+    event.preventDefault();
+    let name = document.querySelector(".full-name-input").value
+    let user = document.querySelector(".user-name-input").value
+    let address = document.querySelector(".address-input").value
+    let phone = document.querySelector(".phone-input").value
+    let email = document.querySelector(".email-input").value
+    addUserToDB(name, user, address, phone, email);
+  })
+}
+
+function addUserToDB(name, user, address, phone, email){
+  fetch("http://localhost:3000/users", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "accept": "application/json"
+    },
+    body: JSON.stringify({
+      "name": name,
+      "username": user,
+      "address": address,
+      "phone": phone,
+      "email": email
+    })
+  }).then(res => res.json())
+  .then(json => { loginCont.innerHTML = '';
+    createSearchForm();
+    greetUser(json)})
+  // .then(json => {
+    // if(json.errors){
+    //   makeErrors(json)
+    // } else {
+    //   return json
+    // }})
+}
+
+// function makeErrors(errorMsgs){
+//   debugger;
+//   loginCont.innerHTML = '';
+//   let errorMessageCont = document.createElement('div');
+//   errorMessageCont.innerHTML = `Sign Up Failed:<br><ul>`;
+//   for(error in errorMsgs){
+//     errorMessageCont.innerHTML += `<li>${error}</li>`;
+//   }
+//   errorMessageCont += `</ul>`;
+//   loginCont.appendChild(errorMessageCont)
+//   createSignUpForm();
+// }
+
+function greetUser(user){
+  let userGreet = document.createElement('div');
+  userGreet.className = "user-greet";
+  userGreet.innerHTML = `Salutations, ${user.name}`;
+  userGreet.dataset.id = user.id;
+  navbar.appendChild(userGreet);
+  createSearchButton()
+}
+
+function showProfile(userId){
+  searchCont.innerHTML = '';
+  jobListCont.innerHTML = '';
+  getUserInfo(userId);
+}
+
+function createSearchForm(){
+  let searchForm = document.createElement('form');
+  searchForm.className = "search-form";
+  let locField = document.createElement('input');
+  locField.className = "location-field";
+  let dropDown = document.createElement('select');
+  dropDown.className = "drop-down-field"
+  let fullTime = new Option('Full-Time', 'full_time', true, false);
+  let partTime = new Option('Part-Time', 'part_time', false, false);
+  dropDown.appendChild(fullTime);
+  dropDown.appendChild(partTime);
+  let desc = document.createElement('input');
+  desc.className = "description-field"
+  let searchBtn = document.createElement('button');
+
+  locField.placeholder = "Enter your Location"
+  desc.placeholder = "Enter Job Description"
+  searchBtn.innerText = "Search"
+  searchBtn.type = 'Submit';
+
+  searchForm.appendChild(locField);
+  searchForm.appendChild(dropDown);
+  searchForm.appendChild(desc);
+  searchForm.appendChild(searchBtn);
+  searchCont.appendChild(searchForm);
+  handleSearchButton(searchForm);
+}
+
+function handleSearchButton(searchForm){
+  searchForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    jobListCont.innerHTML = "";
+    let location = document.querySelector(".location-field").value;
+    let type = document.querySelector(".drop-down-field").value;
+    type == "full_time" ? type = "full_time=true" : type = "";
+    let description = document.querySelector(".description-field").value;
+    getJobs(location, type, description);
+  })
+}
+
+function getJobs(location, type, description){
+  location === "" ? location = "empty" : location = location
+  description === "" ? description = "empty" : description = description
+  fetch(`http://localhost:3000/search/${location}/${description}/${type}`)
+    .then(res => res.json())
+    .then(json => {store.jobs = [];
+      createJobObjs(json);
+    iterateThroughJobs()})
+}
+
+function createJobObjs(jobs){
+  jobs.forEach(job => new Job(job.title, job.location, job.type, job.description,
+    job.how_to_apply, job.company, job.company_url, job.company_logo, job.id))
+}
+
+function renderJob(job){
+  let jobCont = document.createElement('div');
+  jobCont.className = "job-div";
+  jobCont.dataset.id = job.id;
+  jobCont.innerHTML = `<h3>${job.title}</h3>
+  <small>${job.company}</small> -
+  <small>${job.location}</small>`
+  jobListCont.appendChild(jobCont);
+}
+
+function iterateThroughJobs(){
+  for(job of store.jobs){
+    renderJob(job)
+  }
+}
+
+function handleJobListClicks(){
+  jobListCont.addEventListener('click', function(e){
+    if(e.target.className == 'job-div'){
+      let jobId = event.target.dataset.id;
+      let job = store.jobs.find(job => job.id == jobId);
+      renderJobDetails(job);
+    }
+  })
+}
+
+function renderJobDetails(job){
+  jobDetailCont.innerHTML = "";
+  // debugger;
+  let userId = document.querySelector(".user-greet").dataset.id
+
+  // .then(json => { let checkJob = json;
+  // return checkJob})
+  // debugger;
+
+  let jobDeets = document.createElement('div');
+  jobDeets.className = "job-full-details";
+  if(job.companyLogo == null && job.companyLogo == null){
+    jobDeets.innerHTML = `<h2>${job.title}</h2>
+    <small>${job.jobType} - ${job.location}</small>
+    <div class="company-details"><p>${job.company}<p>
+    </div>
+    ${job.description}
+    ${job.howToApply}`
+    jobDetailCont.appendChild(jobDeets);
+  } else if(job.companyLogo == null){
+    jobDeets.innerHTML = `<h2>${job.title}</h2>
+    <small>${job.jobType} - ${job.location}</small>
+    <div class="company-details"><p>${job.company}<p>
+    <a href=${job.companyUrl}>${job.company}'s Website</a>
+    </div>
+    ${job.description}
+    ${job.howToApply}
+    <button class="save-job-button" data-id="${job.id}">Save Job to List</button>`
+    jobDetailCont.appendChild(jobDeets);
+  } else if (job.companyUrl == null){
+    jobDeets.innerHTML = `<h2>${job.title}</h2>
+    <small>${job.jobType} - ${job.location}</small>
+    <div class="company-details"><p>${job.company}<p>
+    <img src="${job.companyLogo}" alt="${job.company} logo">
+    </div>
+    ${job.description}
+    ${job.howToApply}`
+    jobDetailCont.appendChild(jobDeets);
+  } else {
+  jobDeets.innerHTML = `<h2>${job.title}</h2>
+  <small>${job.jobType} - ${job.location}</small>
+  <div class="company-details"><p>${job.company}<p>
+  <img src="${job.companyLogo}" alt="${job.company} logo">
+  <a href=${job.companyUrl}>${job.company}'s Website</a>
+  </div>
+  ${job.description}
+  ${job.howToApply}`
+  }
+  checkIfJobExists(job, userId).then(json => addSaveButton(json))
+  // jobDeets.appendChild(saveBtn);
+  jobDetailCont.appendChild(jobDeets);
+}
+
+function handleSaveButtonClicks(){
+  jobDetailCont.addEventListener('click', function(e){
+    if(e.target.className == "save-job-button"){
+      let jobId = e.target.dataset.id;
+      let job = store.jobs.find(job => job.id == jobId);
+      addJobToDB(job);
+    }
+  })
+}
+
+function addJobToDB(job){
+  fetch(`http://localhost:3000/jobs/`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "accepts": "application/json"
+    },
+    body: JSON.stringify({
+      "title": job.title,
+      "location": job.location,
+      "jobType": job.jobType,
+      "description": job.description,
+      "how_to_apply": job.howToApply,
+      "company": job.company,
+      "company_url": job.companyUrl,
+      "company_logo": job.companyLogo,
+      "apiID": job.apiId
+    })
+  })
+    .then(res => res.json())
+    .then(json => addJobToUserList(json))
+}
+
+function addJobToUserList(job){
+  let userId = document.querySelector(".user-greet").dataset.id
+  fetch(`http:localhost:3000/userjoblists`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "accepts": "application/json"
+    },
+    body: JSON.stringify({
+      "user_id": userId,
+      "job_id": job.id
+    })
+  })
+  jobDetailCont.querySelector(".save-job-button").disabled = true;
+  jobDetailCont.querySelector(".save-job-button").innerText = "Job Saved to List";
+}
+
+function checkIfJobExists(job, userId){
+  return fetch(`http://localhost:3000/userjoblists/${job.apiId}/${userId}`)
+    .then(res => res.json())
+}
+
+function addSaveButton(boolean){
+  let userId = document.querySelector(".user-greet").dataset.id
+  let saveBtn = document.createElement('button');
+  saveBtn.className = "save-job-button";
+  saveBtn.dataset.id = job.id;
+  saveBtn.innerText = "Save Job to List"
+  if( boolean == true){
+    // debugger;
+    saveBtn.innerText = "Job Saved to List"
+    saveBtn.disabled = true;
+  }
+  let jobDeets = document.querySelector(".job-full-details")
+  jobDeets.appendChild(saveBtn);
+}
