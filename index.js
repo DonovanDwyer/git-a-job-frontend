@@ -6,7 +6,7 @@ const searchCont = document.querySelector(".search-container");
 const jobListCont = document.querySelector(".job-listing-container");
 const profileCont = document.querySelector(".user-profile-container");
 const jobDetailCont = document.querySelector(".job-detail-container");
-
+let user=""
 function init(){
   navbar.innerHTML = "";
   searchCont.innerHTML = "";
@@ -394,9 +394,42 @@ function renderJobDetails(job){
   }
   let links = jobDeets.querySelectorAll('a:last-of-type')
   links.forEach((link) => link.target = "_blank")
+  setUserThenEmailBtn(jobDeets,job)
   jobDetailCont.appendChild(jobDeets);
   // debugger;
 }
+function setUserThenEmailBtn(jobDeets,job){
+  let userId = document.querySelector(".user-greet").dataset.id
+   fetch(`http://localhost:3000/users/find/${userId}`)
+  .then (res=>res.json())
+  .then (json => createEmailBtn(jobDeets,json,job))
+}
+
+function createEmailBtn(jobDeets,user,job){
+let subject=`${job.title} at ${job.company}`
+let body=jobBody(job)
+
+debugger
+  let emailBtn=document.createElement('button')
+  emailBtn.className="email-button"
+  emailBtn.innerText="Email this Job"
+  emailBtn.dataset.id=job.id
+
+  jobDeets.appendChild(emailBtn)
+  emailBtn.addEventListener('click',function(){
+  window.open(`mailto:${user.user.email}?subject=${subject}&body=${body}`)
+  })
+}
+
+
+function jobBody(job){
+let body= "Job Title: "+ job.title + "\n" + "Company: "+ job.company + "\n" + "Location: "+ job.location + "\n" + "Type: "+job.jobType + "\n" + "Description:"+ job.description + "\n" +"Company URL: "+job.companyUrl
+body.replace("<p>","")
+body.replace("<li>","")
+body.replace("<ul>","")
+return body
+}
+
 
 function handleSaveButtonClicks(){
   jobDetailCont.addEventListener('click', function(e){
