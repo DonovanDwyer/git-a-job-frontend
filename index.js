@@ -368,7 +368,7 @@ function renderJobDetails(job){
     jobDeets.innerHTML = `<h2>${job.title}</h2>
     <small>${job.jobType} - ${job.location}</small>
     <div class="company-details"><p>${job.company}<p>
-    <a href=${job.companyUrl}>${job.company}'s Website</a>
+    <a href=${job.companyUrl} target="_blank">${job.company}'s Website</a>
     </div>
     ${job.description}
     ${job.howToApply}`
@@ -387,12 +387,15 @@ function renderJobDetails(job){
   <small>${job.jobType} - ${job.location}</small>
   <div class="company-details"><p>${job.company}<p>
   <img src="${job.companyLogo}" alt="${job.company} logo">
-  <a href=${job.companyUrl}>${job.company}'s Website</a>
+  <a href=${job.companyUrl} target="_blank">${job.company}'s Website</a>
   </div>
   ${job.description}
   ${job.howToApply}`
   }
+  let links = jobDeets.querySelectorAll('a:last-of-type')
+  links.forEach((link) => link.target = "_blank")
   jobDetailCont.appendChild(jobDeets);
+  // debugger;
 }
 
 function handleSaveButtonClicks(){
