@@ -106,9 +106,15 @@ function handleLogin(loginForm){
 function pullUserFromDB(user){
   fetch(`http://localhost:3000/users/${user}`)
     .then(res => res.json())
-    .then(json => {loginCont.innerHTML = '';
+    .then(json => {if(json.status == 500){
+      let error = document.createElement('div');
+      error.className = "error-message";
+      error.innerText = "No user by that name exists!"
+      loginCont.prepend(error);
+    } else {
+      loginCont.innerHTML = '';
       createSearchForm();
-      greetUser(json.user)})
+      greetUser(json.user)}})
 }
 
 function createSignUpForm(){
