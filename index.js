@@ -14,7 +14,6 @@ function init(){
   profileCont.innerHTML = "";
   jobDetailCont.innerHTML = "";
   createLogo();
-  // createSearchButton();
   createLoginSignUp();
   handleJobListClicks();
   handleSaveButtonClicks();
@@ -48,6 +47,7 @@ function createProfileButton(){
     searchCont.innerHTML = "";
     jobListCont.innerHTML = "";
     profileCont.innerHTML = "";
+    jobDetailCont.innerHTML = "";
     showProfile();
   })
 }
@@ -248,12 +248,10 @@ function createSearchForm(){
   let desc = document.createElement('input');
   desc.className = "description-field"
   let searchBtn = document.createElement('button');
-
   locField.placeholder = "Enter your Location"
   desc.placeholder = "Enter Job Description"
   searchBtn.innerText = "Search"
   searchBtn.type = 'Submit';
-
   searchForm.appendChild(locField);
   searchForm.appendChild(dropDown);
   searchForm.appendChild(desc);
@@ -268,7 +266,7 @@ function handleSearchButton(searchForm){
     jobListCont.innerHTML = "";
     let location = document.querySelector(".location-field").value;
     let type = document.querySelector(".drop-down-field").value;
-    type == "full_time" ? type = "full_time=true" : type = "";
+    type == "full_time" ? type = "full_time=true" : type = "part_time=true";
     let description = document.querySelector(".description-field").value;
     getJobs(location, type, description);
   })
@@ -338,7 +336,6 @@ function handleUserJobListClicks(){
     if(e.target.className == 'user-job-div'){
       let jobId = event.target.dataset.id;
       let selectJob = store.user_jobs[0].find(job => job.apiID == jobId);
-      //
       let userId = document.querySelector(".user-greet").dataset.id
       selectJob["companyLogo"] = selectJob["company_logo"]
       delete selectJob.company_logo
@@ -348,21 +345,13 @@ function handleUserJobListClicks(){
       delete selectJob.how_to_apply
       renderJobDetails(selectJob);
       addRemoveButton(selectJob, userId);
-      //
     }
   })
 }
 
 function renderJobDetails(job){
-  //
   jobDetailCont.innerHTML = "";
-  //
   let userId = document.querySelector(".user-greet").dataset.id
-
-  // .then(json => { let checkJob = json;
-  // return checkJob})
-  //
-
   let jobDeets = document.createElement('div');
   jobDeets.className = "job-full-details";
   if(job.companyLogo == null && job.companyUrl == null){
@@ -401,8 +390,6 @@ function renderJobDetails(job){
   ${job.description}
   ${job.howToApply}`
   }
-
-  // jobDeets.appendChild(saveBtn);
   jobDetailCont.appendChild(jobDeets);
 }
 
