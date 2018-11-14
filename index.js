@@ -156,12 +156,19 @@ function handleSignUp(signUpForm){
     let address = document.querySelector(".address-input").value
     let phone = document.querySelector(".phone-input").value
     let email = document.querySelector(".email-input").value
-    addUserToDB(name, user, address, phone, email);
+    if(name == "" || user == "" || address == "" || phone == "" || email == ""){
+      let error = document.createElement('div');
+      error.className = "error-message";
+      error.innerText = "Please fill out sign up form completely!"
+      loginCont.prepend(error);
+    } else {
+    addUserToDB(name, user, address, phone, email)
+  }
   })
 }
 
 function addUserToDB(name, user, address, phone, email){
-  fetch("http://localhost:3000/users", {
+  return fetch("http://localhost:3000/users", {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -175,29 +182,12 @@ function addUserToDB(name, user, address, phone, email){
       "email": email
     })
   }).then(res => res.json())
-  .then(json => { loginCont.innerHTML = '';
+  .then(json => {
+    loginCont.innerHTML = '';
     createSearchForm();
-    greetUser(json)})
-  // .then(json => {
-    // if(json.errors){
-    //   makeErrors(json)
-    // } else {
-    //   return json
-    // }})
+    greetUser(json);
+  })
 }
-
-// function makeErrors(errorMsgs){
-//
-//   loginCont.innerHTML = '';
-//   let errorMessageCont = document.createElement('div');
-//   errorMessageCont.innerHTML = `Sign Up Failed:<br><ul>`;
-//   for(error in errorMsgs){
-//     errorMessageCont.innerHTML += `<li>${error}</li>`;
-//   }
-//   errorMessageCont += `</ul>`;
-//   loginCont.appendChild(errorMessageCont)
-//   createSignUpForm();
-// }
 
 function greetUser(user){
   let userGreet = document.createElement('div');
