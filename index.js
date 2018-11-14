@@ -151,18 +151,18 @@ function createSignUpForm(){
 function handleSignUp(signUpForm){
   signUpForm.addEventListener('submit', function(){
     event.preventDefault();
-    let name = document.querySelector(".full-name-input").value
-    let user = document.querySelector(".user-name-input").value
-    let address = document.querySelector(".address-input").value
-    let phone = document.querySelector(".phone-input").value
-    let email = document.querySelector(".email-input").value
+    let name = document.querySelector(".full-name-input").value;
+    let user = document.querySelector(".user-name-input").value;
+    let address = document.querySelector(".address-input").value;
+    let phone = document.querySelector(".phone-input").value;
+    let email = document.querySelector(".email-input").value;
     if(name == "" || user == "" || address == "" || phone == "" || email == ""){
       let error = document.createElement('div');
       error.className = "error-message";
-      error.innerText = "Please fill out sign up form completely!"
+      error.innerText = "Please fill out sign up form completely!";
       loginCont.prepend(error);
     } else {
-    addUserToDB(name, user, address, phone, email)
+    addUserToDB(name, user, address, phone, email);
   }
   })
 }
@@ -273,9 +273,15 @@ function getJobs(location, type, description){
   description === "" ? description = "empty" : description = description
   fetch(`http://localhost:3000/search/${location}/${description}/${type}`)
     .then(res => res.json())
-    .then(json => {store.jobs = [];
+    .then(json => {if(json.length == 0){
+      let error = document.createElement('div');
+      error.className = "error-message";
+      error.innerText = "No job matches found.";
+      jobListCont.appendChild(error);
+    } else {
+      store.jobs = [];
       createJobObjs(json);
-    iterateThroughJobs()})
+      iterateThroughJobs()}})
 }
 
 function createJobObjs(jobs){
