@@ -8,24 +8,48 @@ const profileCont = document.querySelector(".user-profile-container");
 const jobDetailCont = document.querySelector(".job-detail-container");
 
 function init(){
+  navbar.innerHTML = "";
+  searchCont.innerHTML = "";
+  jobListCont.innerHTML = "";
+  profileCont.innerHTML = "";
+  jobDetailCont.innerHTML = "";
   createLogo();
   // createSearchButton();
   createLoginSignUp();
   handleJobListClicks();
-  handleSaveButtonClicks()
+  handleSaveButtonClicks();
+  handleUserJobListClicks();
+  handleRemoveButtonClicks();
 }
 
 function createSearchButton(){
   let search = document.createElement('div');
-  search.className = "search-toggle";
+  search.className = "search-toggle opened";
   search.innerHTML = "Search";
   search.addEventListener('click', function(){
     if (!event.target.className.includes("opened")){
       event.target.className += " opened";
-      // createSearchForm();
+      profileCont.innerHTML = "";
+      jobListCont.innerHTML = "";
+      createSearchForm();
     }
   })
   navbar.appendChild(search);
+}
+
+function createProfileButton(){
+  let profileButton = document.createElement('div');
+  profileButton.className = "profile-button";
+  profileButton.innerText = "Profile";
+  navbar.appendChild(profileButton);
+  profileButton.addEventListener('click', function(e){
+    let searchButton = document.querySelector('.search-toggle');
+    searchButton.className = "search-toggle";
+    searchCont.innerHTML = "";
+    jobListCont.innerHTML = "";
+    profileCont.innerHTML = "";
+    showProfile();
+  })
 }
 
 function createLogo(){
@@ -157,7 +181,7 @@ function addUserToDB(name, user, address, phone, email){
 }
 
 // function makeErrors(errorMsgs){
-//   debugger;
+//
 //   loginCont.innerHTML = '';
 //   let errorMessageCont = document.createElement('div');
 //   errorMessageCont.innerHTML = `Sign Up Failed:<br><ul>`;
@@ -175,13 +199,39 @@ function greetUser(user){
   userGreet.innerHTML = `Salutations, ${user.name}`;
   userGreet.dataset.id = user.id;
   navbar.appendChild(userGreet);
-  createSearchButton()
+  createSearchButton();
+  createProfileButton();
+  createLogoutButton();
 }
 
 function showProfile(userId){
   searchCont.innerHTML = '';
   jobListCont.innerHTML = '';
-  getUserInfo(userId);
+  let currentUserId = document.querySelector('.user-greet').dataset.id
+  let user = getUserInfo(currentUserId);
+}
+
+function getUserInfo(userId){
+  return fetch(`http:/localhost:3000/users/find/${userId}`)
+    .then(res => res.json())
+    .then(json => renderUserProfile(json))
+}
+
+function renderUserProfile(user){
+  let userProfile = document.createElement('div');
+  userProfile.className = "user-profile-container";
+  userProfile.innerHTML = `<h2>${user.user.name}</h2>
+  <small>Username: ${user.user.username}</small>
+  <p>Email Address: ${user.user.email}</p>
+  <p>Home Address: ${user.user.address}</p>
+  <p>Phone Number: ${user.user.phone}</p>`
+  profileCont.appendChild(userProfile)
+  renderUserJobList(user.jobs);
+  store.user_jobs.push(user.jobs);
+}
+
+function renderUserJobList(jobs){
+  iterateThroughUserJobs(jobs);
 }
 
 function createSearchForm(){
@@ -255,35 +305,74 @@ function iterateThroughJobs(){
   }
 }
 
+function iterateThroughUserJobs(jobs){
+  for(job of jobs){
+    renderUserJob(job)
+  }
+}
+
+function renderUserJob(job){
+  let jobCont = document.createElement('div');
+  jobCont.className = "user-job-div";
+  jobCont.dataset.id = job.apiID;
+  jobCont.innerHTML = `<h3>${job.title}</h3>
+  <small>${job.company}</small> -
+  <small>${job.location}</small>`
+  jobListCont.appendChild(jobCont);
+}
+
 function handleJobListClicks(){
   jobListCont.addEventListener('click', function(e){
     if(e.target.className == 'job-div'){
       let jobId = event.target.dataset.id;
       let job = store.jobs.find(job => job.id == jobId);
+      let userId = document.querySelector(".user-greet").dataset.id
+      checkIfJobExists(job, userId).then(json => {addSaveButton(job, json)})
       renderJobDetails(job);
     }
   })
 }
 
+function handleUserJobListClicks(){
+  jobListCont.addEventListener('click', function(e){
+    if(e.target.className == 'user-job-div'){
+      let jobId = event.target.dataset.id;
+      let selectJob = store.user_jobs[0].find(job => job.apiID == jobId);
+      //
+      let userId = document.querySelector(".user-greet").dataset.id
+      selectJob["companyLogo"] = selectJob["company_logo"]
+      delete selectJob.company_logo
+      selectJob["companyUrl"] = selectJob["company_url"]
+      delete selectJob.company_url
+      selectJob["howToApply"] = selectJob["how_to_apply"]
+      delete selectJob.how_to_apply
+      renderJobDetails(selectJob);
+      addRemoveButton(selectJob, userId);
+      //
+    }
+  })
+}
+
 function renderJobDetails(job){
+  //
   jobDetailCont.innerHTML = "";
-  // debugger;
+  //
   let userId = document.querySelector(".user-greet").dataset.id
 
   // .then(json => { let checkJob = json;
   // return checkJob})
-  // debugger;
+  //
 
   let jobDeets = document.createElement('div');
   jobDeets.className = "job-full-details";
-  if(job.companyLogo == null && job.companyLogo == null){
+  if(job.companyLogo == null && job.companyUrl == null){
     jobDeets.innerHTML = `<h2>${job.title}</h2>
     <small>${job.jobType} - ${job.location}</small>
     <div class="company-details"><p>${job.company}<p>
     </div>
     ${job.description}
     ${job.howToApply}`
-    jobDetailCont.appendChild(jobDeets);
+    // jobDetailCont.appendChild(jobDeets);
   } else if(job.companyLogo == null){
     jobDeets.innerHTML = `<h2>${job.title}</h2>
     <small>${job.jobType} - ${job.location}</small>
@@ -291,9 +380,8 @@ function renderJobDetails(job){
     <a href=${job.companyUrl}>${job.company}'s Website</a>
     </div>
     ${job.description}
-    ${job.howToApply}
-    <button class="save-job-button" data-id="${job.id}">Save Job to List</button>`
-    jobDetailCont.appendChild(jobDeets);
+    ${job.howToApply}`
+    // jobDetailCont.appendChild(jobDeets);
   } else if (job.companyUrl == null){
     jobDeets.innerHTML = `<h2>${job.title}</h2>
     <small>${job.jobType} - ${job.location}</small>
@@ -302,7 +390,7 @@ function renderJobDetails(job){
     </div>
     ${job.description}
     ${job.howToApply}`
-    jobDetailCont.appendChild(jobDeets);
+    // jobDetailCont.appendChild(jobDeets);
   } else {
   jobDeets.innerHTML = `<h2>${job.title}</h2>
   <small>${job.jobType} - ${job.location}</small>
@@ -313,7 +401,7 @@ function renderJobDetails(job){
   ${job.description}
   ${job.howToApply}`
   }
-  checkIfJobExists(job, userId).then(json => addSaveButton(json))
+
   // jobDeets.appendChild(saveBtn);
   jobDetailCont.appendChild(jobDeets);
 }
@@ -373,17 +461,56 @@ function checkIfJobExists(job, userId){
     .then(res => res.json())
 }
 
-function addSaveButton(boolean){
+function addSaveButton(job, boolean){
   let userId = document.querySelector(".user-greet").dataset.id
   let saveBtn = document.createElement('button');
   saveBtn.className = "save-job-button";
   saveBtn.dataset.id = job.id;
   saveBtn.innerText = "Save Job to List"
-  if( boolean == true){
-    // debugger;
+  if(boolean){
     saveBtn.innerText = "Job Saved to List"
     saveBtn.disabled = true;
   }
   let jobDeets = document.querySelector(".job-full-details")
   jobDeets.appendChild(saveBtn);
+}
+
+function addRemoveButton(job){
+  let userId = document.querySelector(".user-greet").dataset.id;
+  let removeBtn = document.createElement('button');
+  removeBtn.className = "remove-job-button";
+  removeBtn.dataset.id = job.id;
+  removeBtn.innerText = "Remove Job from List";
+  jobDetailCont.appendChild(removeBtn);
+}
+
+function handleRemoveButtonClicks(){
+  jobDetailCont.addEventListener('click', function(e){
+    if(e.target.className == "remove-job-button"){
+      let jobId = e.target.dataset.id;
+      let job = store.user_jobs[0].find(job => job.id == jobId);
+      let userId = document.querySelector(".user-greet").dataset.id
+      let jobApiId = job.apiID;
+      let jobListing = document.querySelector(`[data-id="${jobApiId}"]`)
+      jobListing.remove();
+      jobDetailCont.innerHTML = "";
+      removeJobfromUserlist(job, userId);
+    }
+  })
+}
+
+function removeJobfromUserlist(job, userId){
+  fetch(`http://localhost:3000/userjoblists/${userId}/${job.id}`, {
+    method: "DELETE"
+  }).then(res => console.log("success"))
+}
+
+function createLogoutButton(){
+  let logout = document.createElement("div");
+  logout.className = "log-out-button";
+  logout.innerText = "Log Out";
+  logout.addEventListener('click', function(e){
+    init()
+  });
+  navbar.appendChild(logout);
 }

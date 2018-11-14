@@ -1,4 +1,4 @@
-store = { jobs: [] }
+store = { jobs: [], user_jobs: [] }
 
 jobId = 0
 
