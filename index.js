@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', init);
 
 const navbar = document.querySelector(".navbar");
+const navWrap = document.querySelector(".nav-wrapper")
 const loginCont = document.querySelector(".login-container");
 const searchCont = document.querySelector(".search-container");
 const jobListCont = document.querySelector(".job-listing-container");
@@ -14,30 +15,46 @@ function init(){
   navbar.appendChild(loginCont);
   searchCont.innerHTML = "";
   jobListCont.innerHTML = "";
+  jobListCont.classList.remove("kill")
   profileCont.innerHTML = "";
   jobDetailCont.innerHTML = "";
   userFormCont.innerHTML = "";
+  loginCont.innerHTML = "";
+  userFormCont.classList.remove("slide");
+  presImage.classList.remove("blur");
+  presImage.classList.remove("slideout");
+  userFormCont.classList.remove("slideaway");
+  presImage.classList.add("slidebackin")
+  navWrap.classList.remove("blueitup")
   createLogo();
+  let logo = document.querySelector(".logo-text")
+  logo.setAttribute('style', 'color:black;');
   createLoginSignUp();
   handleJobListClicks();
   handleSaveButtonClicks();
   handleUserJobListClicks();
   handleRemoveButtonClicks();
+  jobDetailCont.classList.remove("show");
 }
 
 function createSearchButton(){
   let search = document.createElement('div');
-  search.className = "search-toggle opened";
+  search.className = "search-button";
   search.innerHTML = "Search";
-  search.addEventListener('click', function(){
-    if (!event.target.className.includes("opened")){
-      event.target.className += " opened";
+  search.addEventListener('click', ()=>{
+    let search = document.querySelector(".search-container")
+    if (!search.hasChildNodes()){
       profileCont.innerHTML = "";
       jobListCont.innerHTML = "";
+      jobListCont.classList.remove("kill")
       createSearchForm();
+      createProfileButton();
+      let searchBtn = document.querySelector(".search-button")
+      searchBtn.remove();
     }
   })
-  searchCont.prepend(search);
+  let nav = document.querySelector(".navbar");
+  nav.appendChild(search);
 }
 
 function createProfileButton(){
@@ -46,13 +63,13 @@ function createProfileButton(){
   profileButton.innerText = "Profile";
   navbar.appendChild(profileButton);
   profileButton.addEventListener('click', function(e){
-    let searchButton = document.querySelector('.search-toggle');
-    searchButton.className = "search-toggle";
     searchCont.innerHTML = "";
     jobListCont.innerHTML = "";
+    jobListCont.classList.remove("kill")
     profileCont.innerHTML = "";
     jobDetailCont.innerHTML = "";
     showProfile();
+    jobDetailCont.classList.remove("show");
   })
 }
 
@@ -60,7 +77,9 @@ function createLogo(){
   let logo = document.createElement('h1');
   logo.className = "logo-text";
   logo.innerText = "Git a Job";
+  logo.addEventListener('click', init)
   navbar.prepend(logo);
+
 }
 
 function createLoginSignUp(){
@@ -74,11 +93,9 @@ function createLoginSignUp(){
   loginCont.appendChild(signBtn);
   loginCont.addEventListener('click', function(e){
     if(event.target.id == 'log-in'){
-
       createLoginForm();
     }
     if(event.target.id == 'sign-in'){
-      // loginCont.innerHTML = '';
       createSignUpForm();
     }
   })
@@ -101,6 +118,7 @@ function createLoginForm(){
   userFormCont.appendChild(title);
   userFormCont.appendChild(loginForm);
   userFormCont.classList.add("slide");
+  presImage.classList.remove("slidebackin");
   presImage.classList.add("blur");
   handleLogin(loginForm);
 }
@@ -111,9 +129,6 @@ function handleLogin(loginForm){
     loginCont.innerHTML = '';
     let user = document.querySelector(".user-name-input").value
     pullUserFromDB(user);
-    userFormCont.classList.remove("slide");
-    userFormCont.classList.add("slideaway");
-    presImage.classList.add("slideout")
 })
 }
 
@@ -123,12 +138,19 @@ function pullUserFromDB(user){
     .then(json => {if(json.status == 500){
       let error = document.createElement('div');
       error.className = "error-message";
-      error.innerText = "No user by that name exists!"
-      loginCont.prepend(error);
+      error.innerHTML = "<br>No user by that name exists!"
+      userFormCont.appendChild(error);
     } else {
       loginCont.innerHTML = '';
+      userFormCont.classList.remove("slide");
+      userFormCont.classList.add("slideaway");
+      presImage.classList.add("slideout")
+      navWrap.classList.add("blueitup")
+      let logo = document.querySelector(".logo-text")
+      logo.setAttribute('style', 'color:white;');
       createSearchForm();
-      greetUser(json.user)}})
+      greetUser(json.user);
+      createProfileButton()}})
 }
 
 function createSignUpForm(){
@@ -164,6 +186,7 @@ function createSignUpForm(){
   userFormCont.appendChild(title);
   userFormCont.appendChild(signUpForm);
   userFormCont.classList.add("slide");
+  presImage.classList.remove("slidebackin");
   presImage.classList.add("blur");
   handleSignUp(signUpForm);
 }
@@ -179,13 +202,16 @@ function handleSignUp(signUpForm){
     if(name == "" || user == "" || address == "" || phone == "" || email == ""){
       let error = document.createElement('div');
       error.className = "error-message";
-      error.innerText = "Please fill out sign up form completely!";
-      loginCont.prepend(error);
+      error.innerHTML = "<br>Please fill out sign up form completely!";
+      userFormCont.appendChild(error);
     } else {
       loginCont.innerHTML = '';
       userFormCont.classList.remove("slide");
       userFormCont.classList.add("slideaway");
-
+      presImage.classList.add("slideout")
+      navWrap.classList.add("blueitup")
+      let logo = document.querySelector(".logo-text")
+      logo.setAttribute('style', 'color:white;');
       addUserToDB(name, user, address, phone, email);
   }
   })
@@ -216,17 +242,16 @@ function addUserToDB(name, user, address, phone, email){
 function greetUser(user){
   let userGreet = document.createElement('div');
   userGreet.className = "user-greet";
-  userGreet.innerHTML = `Salutations, ${user.name}`;
+  userGreet.innerHTML = `Salutations, ${user.name}!`;
   userGreet.dataset.id = user.id;
   navbar.appendChild(userGreet);
-  createSearchButton();
-  createProfileButton();
   createLogoutButton();
 }
 
 function showProfile(userId){
   searchCont.innerHTML = '';
   jobListCont.innerHTML = '';
+  jobListCont.classList.remove("kill")
   let currentUserId = document.querySelector('.user-greet').dataset.id
   let user = getUserInfo(currentUserId);
 }
@@ -246,6 +271,9 @@ function renderUserProfile(user){
   <p>Home Address: ${user.user.address}</p>
   <p>Phone Number: ${user.user.phone}</p>`
   profileCont.appendChild(userProfile)
+  createSearchButton();
+  let profileButton = document.querySelector(".profile-button");
+  profileButton.remove();
   renderUserJobList(user.jobs);
   store.user_jobs.push(user.jobs);
 }
@@ -257,6 +285,8 @@ function renderUserJobList(jobs){
 function createSearchForm(){
   let searchForm = document.createElement('form');
   searchForm.className = "search-form";
+  let title = document.createElement('h3');
+  title.innerText = "Job Search"
   let locField = document.createElement('input');
   locField.className = "location-field";
   let dropDown = document.createElement('select');
@@ -270,15 +300,15 @@ function createSearchForm(){
   let searchBtn = document.createElement('button');
   locField.placeholder = "Enter your Location"
   desc.placeholder = "Enter Job Description"
-  searchBtn.innerText = "Search"
+  searchBtn.innerText = "Search for Jobs"
   searchBtn.type = 'Submit';
+  searchForm.appendChild(title);
   searchForm.appendChild(locField);
   searchForm.appendChild(dropDown);
   searchForm.appendChild(desc);
   searchForm.appendChild(searchBtn);
   searchCont.appendChild(searchForm);
   handleSearchButton(searchForm);
-  presImage.innerHTML = "";
 }
 
 function handleSearchButton(searchForm){
@@ -290,6 +320,7 @@ function handleSearchButton(searchForm){
     type == "full_time" ? type = "full_time=true" : type = "part_time=true";
     let description = document.querySelector(".description-field").value;
     getJobs(location, type, description);
+    jobListCont.classList.add("kill")
   })
 }
 
@@ -303,6 +334,7 @@ function getJobs(location, type, description){
       error.className = "error-message";
       error.innerText = "No job matches found.";
       jobListCont.appendChild(error);
+      jobListCont.classList.add("kill")
     } else {
       store.jobs = [];
       createJobObjs(json);
@@ -343,12 +375,14 @@ function renderUserJob(job){
   jobCont.innerHTML = `<h3>${job.title}</h3>
   <small>${job.company}</small> -
   <small>${job.location}</small>`
+  jobListCont.classList.add("kill")
   jobListCont.appendChild(jobCont);
 }
 
 function handleJobListClicks(){
   jobListCont.addEventListener('click', function(e){
-    if(e.target.className == 'job-div'){
+    if(e.target.className == 'job-div' || e.target.parentNode.className == 'job-div'){
+      // debugger;
       let jobId = event.target.dataset.id;
       let job = store.jobs.find(job => job.id == jobId);
       let userId = document.querySelector(".user-greet").dataset.id
@@ -420,6 +454,7 @@ function renderJobDetails(job){
   let links = jobDeets.querySelectorAll('a:last-of-type')
   links.forEach((link) => link.target = "_blank")
   jobDetailCont.appendChild(jobDeets);
+  jobDetailCont.classList.add("show");
 }
 
 function handleSaveButtonClicks(){

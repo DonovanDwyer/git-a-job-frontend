@@ -1,36 +1,87 @@
 @import url('https://fonts.googleapis.com/css?family=Lobster');
+@import url('https://fonts.googleapis.com/css?family=Pattaya');
+@import url('https://fonts.googleapis.com/css?family=Anton');
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif');
+@import url('https://fonts.googleapis.com/css?family=Scope+One');
+
+body {
+  font-family: 'Scope One', serif;
+}
 
 h1 {
   font-family: 'Lobster', cursive;
   color: black;
 }
+.nav-bar {
+  position: absolute;
+  top: 0;
+  margin-left: 0;
+}
 .nav-wrapper {
-  /* display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: 40px 40px; */
+  margin: 0;
+  top: 0;
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+#log-in {
+  font-size: 1.2em;
+  font-family: 'Anton', sans-serif;
+  margin-top: -1em;
+}
+#sign-in {
+  font-size: 1.2em;
+  font-family: 'Anton', sans-serif;
+  margin-top: -1em;
+}
+.search-button {
+  font-family: 'Anton', sans-serif;
+}
+.search-button:hover {
+  color: #CC5014;
+  cursor: pointer;
+}
+.nav-wrapper.blueitup {
+animation: forwards;
+animation-duration: 0.5s;
+animation-name: blueitup;
+}
+@keyframes blueitup {
+  from {
+    background-color: white;
+    color: black;
+  }
+  to {
+    background-color: #7C80CC;
+    color: white;
+  }
 }
 .navbar div {
-  /* grid-column: 7;
-  grid-row: 2; */
   display: inline-flex;
   flex-direction: row;
   justify-content: space-around;
 }
 .logo-text {
-  /* grid-column-start: 1; */
-  /* grid-column-end: 3; */
   grid-row: 1;
   display: flex;
-  margin: 0;
+  width: 150px;
+  margin: 7px 0 0 15px;
+}
+.logo-text:hover {
+  cursor: pointer;
+}
+.search-form h3 {
+  margin-bottom: 10px;
+  margin-left: 5px;
+  font-size: 1.8em;
+  font-family: 'Lobster', cursive;
 }
 .login-container {
-
   display: flex;
   margin-left: 80%;
   top: 20px;
 }
 .navbar button {
-  /* I'm removing the default button styling right here: */
   background: none;
 	color: inherit;
 	border: none;
@@ -42,7 +93,34 @@ h1 {
 button:hover{
   animation: forwards;
   animation-name: redden;
-  animation-duration: 0.3s;
+  animation-duration: 0.2s;
+}
+.user-greet {
+  margin-left: -100px;
+  margin-right: 20px;
+  margin-top: -20px;
+  /* font-weight: bold; */
+  font-size: 1.5em;
+  font-family: 'Lobster', cursive;
+}
+.log-out-button {
+  margin-right: 10px;
+  cursor: pointer;
+  transition-property: color;
+  transition-duration: 0.3s;
+  font-family: 'Anton', sans-serif;
+}
+.log-out-button:hover {
+  color: red;
+}
+.profile-button {
+  cursor: pointer;
+  transition-property: color;
+  transition-duration: 0.1s;
+  font-family: 'Anton', sans-serif;
+}
+.profile-button:hover {
+  color: #CC5014;
 }
 @keyframes redden {
   from {
@@ -55,18 +133,21 @@ button:hover{
 #sign-in {
   margin-left: 20px;
 }
+.main-wrapper {
+  position: relative;
+  top: 4em;
+  /* background-image: url('./img/officespace.jpeg'); */
+}
 .user-form-container {
   display: block;
   margin-top: 1em;
   margin-left: auto;
   margin-right: auto;
-  /* justify-content: center; */
   grid-column-start: 2;
   grid-column-end: 3;
   grid-row: 1;
   padding: 2em;
   width: 15em;
-  /* min-height: 10em; */
   border-radius: 30px;
   background-color: white;
   transform: translate(400%);
@@ -75,6 +156,7 @@ button:hover{
   text-align: center;
   display: block;
   margin: 0;
+  font-family: 'Lobster', cursive;
 }
 .user-form-container.slide {
   animation: forwards;
@@ -93,15 +175,17 @@ button:hover{
 }
 @keyframes slideout {
   from {
+    opacity: 1;
     transform: translateX(0%)
   }
   to {
+    opacity: 0;
     transform: translateX(250%)
   }
 }
 .user-form-container.slideaway {
   animation: forwards;
-  animation-duration: 0.4s;
+  animation-duration: 0.2s;
   animation-name: slideaway;
 }
 @keyframes slideaway {
@@ -123,8 +207,9 @@ button:hover{
   overflow: hidden;
   left: 0;
   width: 100%;
-  height: 28em;
+  height: 33em;
   z-index: -100;
+  max-height: 35em;
 }
 .presentation-image img {
   width: 104%;
@@ -150,6 +235,21 @@ button:hover{
   animation-duration: 1.2s;
   animation-name: slideout;
 }
+.presentation-image img.slidebackin{
+  animation: forwards;
+  animation-duration: 1s;
+  animation-name: slidebackin;
+}
+@keyframes slidebackin {
+  from {
+    opacity: 0;
+    transform: translateX(40%)
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0%)
+  }
+}
 .user-form-container input {
   padding-left: 15px;
   margin-top: 2em;
@@ -158,7 +258,6 @@ button:hover{
   border-radius: 10px;
   border: 1px solid #EAEBE7;
 }
-
 .user-form-container button {
   height: 30px;
   width: 60px;
@@ -174,31 +273,113 @@ button:hover{
   grid-gap: 10px;
   grid-auto-rows: minmax(100px, auto);
   overflow: hidden;
+  max-height: 35em;
 }
 .search-container {
   grid-column: 1;
   grid-row: 1 / 7;
+  max-height: 35em;
+}
+.search-container input {
+  padding-left: 8px;
+  margin-top: 1em;
+  min-height: 1.5em;
+  min-width: 100px;
+  border-radius: 5px;
+  border: 1px solid #EAEBE7;
+}
+.search-container select {
+  margin-top: 10px;
+  margin-left: 2px;
+  font-size: 13px;
+  width: 11em;
+  padding: 10px 8px 10px 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  position: relative;
+}
+.search-container button {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 80px;
+  background-color: #D6D6D3;
+  margin-top: 1em;
+  margin-left: 2.5em;
 }
 .job-listing-container {
   grid-column: 2 / 3;
   grid-row: 1;
-  /* background-color: grey; */
+  max-height: 38em;
+  overflow: scroll;
+  height: 0px;
+  transition-property: height;
+  transition-duration: 0.5s;
+  background-color: #AED6CB;
+}
+.job-listing-container.kill {
+  height: 40em;
 }
 .job-detail-container {
   grid-column: 3 / 6;
   grid-row: 1;
   padding-left: 10px;
+  max-height: 40em;
+  overflow: scroll;
+  transform: translateX(200%);
+  transition-property: transform;
+  /* transition-delay: 1s; */
+  transition-duration: 1s;
+  font-family: 'Noto Serif', serif;
+  font-size: 0.8em;
+}
+.job-detail-container.show {
+  transform: translatex(0%);
 }
 .job-div {
+  padding: 15px;
+  margin: 10px;
   background-color: white;
+  border-radius: 5px;
+  transition-property: background-color;
+  transition-duration: 0.1s;
+}
+.job-div:hover {
+  background-color: #CC835B;
+  cursor: pointer;
+}
+.user-job-div {
+  /* background-color: white;
   border: 1px solid grey;
-  border-radius: 0px 9px 9px 0px;
-  margin-bottom: 4px;
-  padding-left: 5px;
+  border-radius: 9px;
+  padding: 5px;
+  margin: 10px; */
+  padding: 15px;
+  margin: 10px;
+  background-color: white;
+  border-radius: 5px;
+  transition-property: background-color;
+  transition-duration: 0.1s;
+}
+.user-job-div:hover {
+  background-color: #CC835B;
+  font-weight: bold;
+  cursor: pointer;
 }
 .user-profile-container {
   grid-column: 1 / 2;
   grid-row: 1;
+}
+.user-profile-container small {
+  margin-top: -5px;
+}
+.job-detail-container {
+  margin-left: 3em;
+}
+.job-detail-container img {
+  max-width: 500px;
 }
 /* 141ACC
 3D4099
