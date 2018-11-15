@@ -4,22 +4,204 @@ h1 {
   font-family: 'Lobster', cursive;
   color: black;
 }
-
-.navbar {
-  /* position: fixed;
-  width: 100%;
-  height: 40px;
-  background-color: #008EFF;
-  top: 0;
-  left: 0; */
+.nav-wrapper {
+  /* display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: 40px 40px; */
 }
-
+.navbar div {
+  /* grid-column: 7;
+  grid-row: 2; */
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
 .logo-text {
+  /* grid-column-start: 1; */
+  /* grid-column-end: 3; */
+  grid-row: 1;
+  display: flex;
   margin: 0;
 }
+.login-container {
 
-.login-container{
-  /* height: 300px;
-  width: 300px;
-  background-color: red; */
+  display: flex;
+  margin-left: 80%;
+  top: 20px;
 }
+.navbar button {
+  /* I'm removing the default button styling right here: */
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+button:hover{
+  animation: forwards;
+  animation-name: redden;
+  animation-duration: 0.3s;
+}
+@keyframes redden {
+  from {
+    color: black;
+  }
+  to {
+    color: #CC5014;
+  }
+}
+#sign-in {
+  margin-left: 20px;
+}
+.user-form-container {
+  display: block;
+  margin-top: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  /* justify-content: center; */
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row: 1;
+  padding: 2em;
+  width: 15em;
+  /* min-height: 10em; */
+  border-radius: 30px;
+  background-color: white;
+  transform: translate(400%);
+}
+.user-form-container h2 {
+  text-align: center;
+  display: block;
+  margin: 0;
+}
+.user-form-container.slide {
+  animation: forwards;
+  animation-duration: 0.4s;
+  animation-name: slidein;
+}
+@keyframes slidein {
+  from {
+    opacity: 0;
+    transform: translateX(250%)
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0%)
+  }
+}
+@keyframes slideout {
+  from {
+    transform: translateX(0%)
+  }
+  to {
+    transform: translateX(250%)
+  }
+}
+.user-form-container.slideaway {
+  animation: forwards;
+  animation-duration: 0.4s;
+  animation-name: slideaway;
+}
+@keyframes slideaway {
+  from {
+    opacity: 1;
+    transform: translateX(0%)
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-250%)
+  }
+}
+.presentation-image {
+  grid-column-start: 1;
+  grid-column-end: 7;
+  grid-row-start: 1;
+  grid-row-end: 5;
+  position: relative;
+  overflow: hidden;
+  left: 0;
+  width: 100%;
+  height: 28em;
+  z-index: -100;
+}
+.presentation-image img {
+  width: 104%;
+  position: absolute;
+}
+.presentation-image img.blur {
+  animation: forwards;
+  animation-duration: 0.3s;
+  animation-name: bluritup;
+}
+@keyframes bluritup {
+  from {
+    -webkit-filter: blur(0px);
+    -webkit-filter: brightness(100%);
+  }
+  to {
+    -webkit-filter: blur(8px);
+    -webkit-filter: brightness(50%);
+  }
+}
+.presentation-image img.slideout{
+  animation: forwards;
+  animation-duration: 1.2s;
+  animation-name: slideout;
+}
+.user-form-container input {
+  padding-left: 15px;
+  margin-top: 2em;
+  min-height: 3em;
+  min-width: 240px;
+  border-radius: 10px;
+  border: 1px solid #EAEBE7;
+}
+
+.user-form-container button {
+  height: 30px;
+  width: 60px;
+  border: 1px solid #CECFCC;
+  border-radius: 5px;
+  background-color: #D6D6D3;
+  margin-top: 1em;
+  margin-left: 70%;
+}
+.main-wrapper {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(auto, 200px));
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+  overflow: hidden;
+}
+.search-container {
+  grid-column: 1;
+  grid-row: 1 / 7;
+}
+.job-listing-container {
+  grid-column: 2 / 3;
+  grid-row: 1;
+  /* background-color: grey; */
+}
+.job-detail-container {
+  grid-column: 3 / 6;
+  grid-row: 1;
+  padding-left: 10px;
+}
+.job-div {
+  background-color: white;
+  border: 1px solid grey;
+  border-radius: 0px 9px 9px 0px;
+  margin-bottom: 4px;
+  padding-left: 5px;
+}
+.user-profile-container {
+  grid-column: 1 / 2;
+  grid-row: 1;
+}
+/* 141ACC
+3D4099
+008EFF
+FF9940
+CC5014 */

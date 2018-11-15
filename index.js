@@ -6,13 +6,17 @@ const searchCont = document.querySelector(".search-container");
 const jobListCont = document.querySelector(".job-listing-container");
 const profileCont = document.querySelector(".user-profile-container");
 const jobDetailCont = document.querySelector(".job-detail-container");
+const userFormCont = document.querySelector(".user-form-container");
+const presImage = document.querySelector(".big-image")
 
 function init(){
   navbar.innerHTML = "";
+  navbar.appendChild(loginCont);
   searchCont.innerHTML = "";
   jobListCont.innerHTML = "";
   profileCont.innerHTML = "";
   jobDetailCont.innerHTML = "";
+  userFormCont.innerHTML = "";
   createLogo();
   createLoginSignUp();
   handleJobListClicks();
@@ -33,7 +37,7 @@ function createSearchButton(){
       createSearchForm();
     }
   })
-  navbar.appendChild(search);
+  searchCont.prepend(search);
 }
 
 function createProfileButton(){
@@ -56,7 +60,7 @@ function createLogo(){
   let logo = document.createElement('h1');
   logo.className = "logo-text";
   logo.innerText = "Git a Job";
-  navbar.appendChild(logo);
+  navbar.prepend(logo);
 }
 
 function createLoginSignUp(){
@@ -70,17 +74,20 @@ function createLoginSignUp(){
   loginCont.appendChild(signBtn);
   loginCont.addEventListener('click', function(e){
     if(event.target.id == 'log-in'){
-      loginCont.innerHTML = '';
+
       createLoginForm();
     }
     if(event.target.id == 'sign-in'){
-      loginCont.innerHTML = '';
+      // loginCont.innerHTML = '';
       createSignUpForm();
     }
   })
 }
 
 function createLoginForm(){
+  userFormCont.innerHTML = ""
+  let title = document.createElement('h2');
+  title.innerHTML = "Log In";
   let loginForm = document.createElement('form');
   loginForm.className = "login-form";
   let usernameField = document.createElement('input');
@@ -91,15 +98,22 @@ function createLoginForm(){
   submitButton.innerText = "Log In";
   loginForm.appendChild(usernameField);
   loginForm.appendChild(submitButton);
-  loginCont.appendChild(loginForm);
+  userFormCont.appendChild(title);
+  userFormCont.appendChild(loginForm);
+  userFormCont.classList.add("slide");
+  presImage.classList.add("blur");
   handleLogin(loginForm);
 }
 
 function handleLogin(loginForm){
   loginForm.addEventListener('submit', function(){
     event.preventDefault();
+    loginCont.innerHTML = '';
     let user = document.querySelector(".user-name-input").value
     pullUserFromDB(user);
+    userFormCont.classList.remove("slide");
+    userFormCont.classList.add("slideaway");
+    presImage.classList.add("slideout")
 })
 }
 
@@ -118,6 +132,9 @@ function pullUserFromDB(user){
 }
 
 function createSignUpForm(){
+  userFormCont.innerHTML = ""
+  let title = document.createElement('h2');
+  title.innerHTML = "Sign Up";
   let signUpForm = document.createElement('form');
   signUpForm.className = "sign-up-form";
   let usernameField = document.createElement('input');
@@ -144,7 +161,10 @@ function createSignUpForm(){
   signUpForm.appendChild(phoneField);
   signUpForm.appendChild(emailField);
   signUpForm.appendChild(submitButton);
-  loginCont.appendChild(signUpForm);
+  userFormCont.appendChild(title);
+  userFormCont.appendChild(signUpForm);
+  userFormCont.classList.add("slide");
+  presImage.classList.add("blur");
   handleSignUp(signUpForm);
 }
 
@@ -162,7 +182,11 @@ function handleSignUp(signUpForm){
       error.innerText = "Please fill out sign up form completely!";
       loginCont.prepend(error);
     } else {
-    addUserToDB(name, user, address, phone, email);
+      loginCont.innerHTML = '';
+      userFormCont.classList.remove("slide");
+      userFormCont.classList.add("slideaway");
+
+      addUserToDB(name, user, address, phone, email);
   }
   })
 }
@@ -254,6 +278,7 @@ function createSearchForm(){
   searchForm.appendChild(searchBtn);
   searchCont.appendChild(searchForm);
   handleSearchButton(searchForm);
+  presImage.innerHTML = "";
 }
 
 function handleSearchButton(searchForm){
@@ -377,7 +402,7 @@ function renderJobDetails(job){
     jobDeets.innerHTML = `<h2>${job.title}</h2>
     <small>${job.jobType} - ${job.location}</small>
     <div class="company-details"><p>${job.company}<p>
-    <img src="${job.companyLogo}" alt="${job.company} logo">
+    <img src="${job.companyLogo}" alt="${job.company} logo"><br>
     </div>
     ${job.description}
     ${job.howToApply}`
@@ -386,7 +411,7 @@ function renderJobDetails(job){
   jobDeets.innerHTML = `<h2>${job.title}</h2>
   <small>${job.jobType} - ${job.location}</small>
   <div class="company-details"><p>${job.company}<p>
-  <img src="${job.companyLogo}" alt="${job.company} logo">
+  <img src="${job.companyLogo}" alt="${job.company} logo"><br>
   <a href=${job.companyUrl} target="_blank">${job.company}'s Website</a>
   </div>
   ${job.description}
@@ -395,7 +420,6 @@ function renderJobDetails(job){
   let links = jobDeets.querySelectorAll('a:last-of-type')
   links.forEach((link) => link.target = "_blank")
   jobDetailCont.appendChild(jobDeets);
-  // debugger;
 }
 
 function handleSaveButtonClicks(){
