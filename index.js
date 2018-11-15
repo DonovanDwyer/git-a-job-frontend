@@ -214,6 +214,7 @@ function getUserInfo(userId){
 }
 
 function renderUserProfile(user){
+
   profileCont.innerHTML=""
   let userProfile = document.createElement('div');
   userProfile.className = "user-profile-container";
@@ -227,6 +228,7 @@ function renderUserProfile(user){
   renderUserJobList(user.jobs);
   store.user_jobs.push(user.jobs);
   createEditButton(user.user)
+  
 }
 
 function createEditButton(user){
@@ -289,8 +291,14 @@ event.preventDefault()
         "accepts": "application/json"
       }
     }).then(res=>res.json())
-    .then(json => {
-      getUserInfo(user.id)
+    .then(json =>{
+    if(json.error){
+      alert('invalid input')
+      editUserForm(user)
+    }
+    else{
+      renderUserProfile(deb(user))
+    }
     })
   })
 profileCont.appendChild(editForm)
