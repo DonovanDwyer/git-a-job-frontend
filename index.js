@@ -214,6 +214,7 @@ function getUserInfo(userId){
 }
 
 function renderUserProfile(user){
+  profileCont.innerHTML=""
   let userProfile = document.createElement('div');
   userProfile.className = "user-profile-container";
   userProfile.innerHTML = `<h2>${user.user.name}</h2>
@@ -222,8 +223,85 @@ function renderUserProfile(user){
   <p>Home Address: ${user.user.address}</p>
   <p>Phone Number: ${user.user.phone}</p>`
   profileCont.appendChild(userProfile)
+  jobListCont.innerHTML=""
   renderUserJobList(user.jobs);
   store.user_jobs.push(user.jobs);
+  createEditButton(user.user)
+}
+
+function createEditButton(user){
+  let editBtn= document.createElement('button')
+  editBtn.className="edit-button"
+  editBtn.innerText="Edit Profile"
+  editBtn.addEventListener('click',function(e){
+    e.preventDefault()
+    editUserForm(user)
+  })
+  profileCont.appendChild(editBtn)
+}
+
+function editUserForm(user){
+
+  profileCont.innerHTML=""
+  let editForm=document.createElement('form')
+  let nameinput=document.createElement('input')
+  nameinput.className="name-edit"
+  nameinput.value=`${user.name}`
+  let usernameinput=document.createElement('input')
+  usernameinput.className="username-edit"
+  usernameinput.value=`${user.username}`
+  let emailinput=document.createElement('input')
+  emailinput.className="email-edit"
+  emailinput.value=`${user.email}`
+  let addressinput=document.createElement('input')
+  addressinput.className="address-edit"
+  addressinput.value=`${user.address}`
+  let phoneinput=document.createElement('input')
+  phoneinput.className="phone-edit"
+  phoneinput.value=`${user.phone}`
+  let submitBtn=document.createElement('button')
+  submitBtn.type="submit"
+  submitBtn.className='submit button'
+  submitBtn.innerText="Submit"
+  editForm.appendChild(nameinput)
+    editForm.appendChild(usernameinput)
+  editForm.appendChild(emailinput)
+  editForm.appendChild(addressinput)
+  editForm.appendChild(phoneinput)
+  editForm.appendChild(submitBtn)
+  editForm.addEventListener('submit',function(){
+
+
+event.preventDefault()
+
+    fetch(`http://localhost:3000/users/${user.id}`,{
+      method:"PATCH",
+      body: JSON.stringify({
+        username:usernameinput.value,
+        name:nameinput.value,
+        email:emailinput.value,
+        address:addressinput.value,
+        phone:phoneinput.value
+
+      }),
+      headers: {
+        "content-type": "application/json",
+        "accepts": "application/json"
+      }
+    }).then(res=>res.json())
+    .then(json => {
+      getUserInfo(user.id)
+    })
+  })
+profileCont.appendChild(editForm)
+}
+
+function deb(json){
+
+  let useremb={}
+  useremb.user=json
+
+  return useremb
 }
 
 function renderUserJobList(jobs){
@@ -396,7 +474,7 @@ function renderJobDetails(job){
   links.forEach((link) => link.target = "_blank")
   setUserThenEmailBtn(jobDeets,job)
   jobDetailCont.appendChild(jobDeets);
-  // debugger;
+  // ;
 }
 function setUserThenEmailBtn(jobDeets,job){
   let userId = document.querySelector(".user-greet").dataset.id
@@ -409,7 +487,7 @@ function createEmailBtn(jobDeets,user,job){
 let subject=`${job.title} at ${job.company}`
 let body=jobBody(job)
 
-// debugger
+//
   let emailBtn=document.createElement('button')
   emailBtn.className="email-button"
   emailBtn.innerText="Email this Job"
@@ -429,7 +507,7 @@ fetch(`http://localhost:3000/users/email/${user.user.id}`,{
     "content-type": "application/json",
     "accepts": "application/json"
   }
-})
+}).then(alert('Job Emailed'))
 
 jobDeets.appendChild(emailBtn)
   })
