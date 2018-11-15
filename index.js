@@ -409,24 +409,36 @@ function createEmailBtn(jobDeets,user,job){
 let subject=`${job.title} at ${job.company}`
 let body=jobBody(job)
 
-debugger
+// debugger
   let emailBtn=document.createElement('button')
   emailBtn.className="email-button"
   emailBtn.innerText="Email this Job"
   emailBtn.dataset.id=job.id
 
   jobDeets.appendChild(emailBtn)
+
   emailBtn.addEventListener('click',function(){
-  window.open(`mailto:${user.user.email}?subject=${subject}&body=${body}`)
+
+fetch(`http://localhost:3000/users/email/${user.user.id}`,{
+  method:"POST",
+  body: JSON.stringify({
+    username:subject,
+    name:body
+  }),
+  headers: {
+    "content-type": "application/json",
+    "accepts": "application/json"
+  }
+})
+
+jobDeets.appendChild(emailBtn)
   })
 }
 
 
 function jobBody(job){
 let body= "Job Title: "+ job.title + "\n" + "Company: "+ job.company + "\n" + "Location: "+ job.location + "\n" + "Type: "+job.jobType + "\n" + "Description:"+ job.description + "\n" +"Company URL: "+job.companyUrl
-body.replace("<p>","")
-body.replace("<li>","")
-body.replace("<ul>","")
+body=body.replace(/<(.|\n)*?>/g,'')
 return body
 }
 
