@@ -1,4 +1,4 @@
-# git-a-job-frontend
+# Git a Job Frontend
 
 The Git A Job allows you to search for tech jobs and store the content from your searches in one easy to access location.
 You can even have your search results emailed to your for easy safekeeping when outside of the web environment.
