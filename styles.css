@@ -423,6 +423,21 @@ button:hover{
   margin-top: 1em;
   margin-left: 2.5em;
 }
+.job-full-details button {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 80px;
+  background-color: #D6D6D3;
+  margin-top: 1em;
+  margin-left: 2.5em;
+  transition-property: background-color;
+  transition-duration: 0.1s;
+}
+.job-full-details button:hover {
+  background-color: #5E5E5D;
+}
 /* 141ACC
 3D4099
 008EFF
