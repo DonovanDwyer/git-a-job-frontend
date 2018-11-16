@@ -394,6 +394,35 @@ button:hover{
 .job-full-details {
   margin-bottom: 200px;
 }
+.user-profile-container input {
+  padding-left: 8px;
+  margin-top: 1em;
+  min-height: 1.5em;
+  min-width: 100px;
+  border-radius: 5px;
+  border: 1px solid #EAEBE7;
+}
+.user-profile-container select {
+  margin-top: 10px;
+  margin-left: 2px;
+  font-size: 13px;
+  width: 11em;
+  padding: 10px 8px 10px 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  position: relative;
+}
+.user-profile-container button {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 80px;
+  background-color: #D6D6D3;
+  margin-top: 1em;
+  margin-left: 2.5em;
+}
 /* 141ACC
 3D4099
 008EFF
