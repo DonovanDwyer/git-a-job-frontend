@@ -8,7 +8,9 @@ const jobListCont = document.querySelector(".job-listing-container");
 const profileCont = document.querySelector(".user-profile-container");
 const jobDetailCont = document.querySelector(".job-detail-container");
 const userFormCont = document.querySelector(".user-form-container");
+const fullDetails = document.querySelector(".job-full-details");
 const presImage = document.querySelector(".big-image")
+
 
 function init(){
   navbar.innerHTML = "";
@@ -18,6 +20,7 @@ function init(){
   jobListCont.classList.remove("kill")
   profileCont.innerHTML = "";
   jobDetailCont.innerHTML = "";
+  // fullDetails.innerHTML = "";
   userFormCont.innerHTML = "";
   loginCont.innerHTML = "";
   userFormCont.classList.remove("slide");
@@ -35,6 +38,10 @@ function init(){
   handleUserJobListClicks();
   handleRemoveButtonClicks();
   jobDetailCont.classList.remove("show");
+  let saveButton = document.querySelector(".save-job-button")
+  saveButton ? saveButton.remove() : null;
+  let removeButton = document.querySelector(".remove-job-button")
+  removeButton ? removeButton.remove() : null;
 }
 
 function createSearchButton(){
@@ -238,6 +245,7 @@ function addUserToDB(name, user, address, phone, email){
     loginCont.innerHTML = '';
     createSearchForm();
     greetUser(json);
+    createProfileButton();
   })
 }
 
@@ -478,8 +486,8 @@ function handleJobListClicks(){
       // debugger;
       let jobId = event.target.dataset.id;
       let job = store.jobs.find(job => job.id == jobId);
-      let userId = document.querySelector(".user-greet").dataset.id
-      checkIfJobExists(job, userId).then(json => {addSaveButton(job, json)})
+      let userId = document.querySelector(".user-greet").dataset.id;
+      checkIfJobExists(job, userId).then(json => {addSaveButton(job, json)});
       renderJobDetails(job);
     }
   })
@@ -544,8 +552,8 @@ function renderJobDetails(job){
   ${job.description}
   ${job.howToApply}`
   }
-  let links = jobDeets.querySelectorAll('a:last-of-type')
-  links.forEach((link) => link.target = "_blank")
+  // let links = jobDeets.querySelectorAll('a:last-of-type')
+  // links.forEach((link) => link.target = "_blank")
   setUserThenEmailBtn(jobDeets,job)
   jobDetailCont.appendChild(jobDeets);
   jobDetailCont.classList.add("show");
@@ -651,6 +659,8 @@ function checkIfJobExists(job, userId){
 }
 
 function addSaveButton(job, boolean){
+  let saveButton = document.querySelector(".save-job-button")
+  saveButton ? saveButton.remove() : null;
   let userId = document.querySelector(".user-greet").dataset.id
   let saveBtn = document.createElement('button');
   saveBtn.className = "save-job-button";
@@ -665,6 +675,8 @@ function addSaveButton(job, boolean){
 }
 
 function addRemoveButton(job){
+  let removeButton = document.querySelector(".remove-job-button")
+  removeButton ? removeButton.remove() : null;
   let userId = document.querySelector(".user-greet").dataset.id;
   let removeBtn = document.createElement('button');
   removeBtn.className = "remove-job-button";
