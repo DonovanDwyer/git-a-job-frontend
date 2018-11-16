@@ -99,7 +99,7 @@ button:hover{
   animation-duration: 0.2s;
 }
 .user-greet {
-  margin-left: -100px;
+  margin-left: -450px;
   margin-right: 100px;
   margin-top: -20px;
   /* font-weight: bold; */
@@ -108,7 +108,7 @@ button:hover{
   color: #AED6CB;
 }
 .log-out-button {
-  margin-left: -80px;
+  margin-left: -40px;
   margin-right: 10px;
   cursor: pointer;
   transition-property: color;
@@ -140,7 +140,7 @@ button:hover{
 }
 .main-wrapper {
   position: relative;
-  top: 4em;
+  top: 5em;
   /* background-image: url('./img/officespace.jpeg'); */
 }
 .user-form-container {
@@ -346,6 +346,7 @@ button:hover{
   transition-duration: 1s;
   font-family: 'Noto Serif', serif;
   font-size: 0.8em;
+
 }
 .job-detail-container.show {
   transform: translatex(0%);
@@ -389,6 +390,9 @@ button:hover{
 }
 .job-detail-container img {
   max-width: 500px;
+}
+.job-full-details {
+  margin-bottom: 200px;
 }
 /* 141ACC
 3D4099

@@ -7,13 +7,9 @@ const searchCont = document.querySelector(".search-container");
 const jobListCont = document.querySelector(".job-listing-container");
 const profileCont = document.querySelector(".user-profile-container");
 const jobDetailCont = document.querySelector(".job-detail-container");
-<<<<<<< HEAD
 const userFormCont = document.querySelector(".user-form-container");
 const presImage = document.querySelector(".big-image")
 
-=======
-let user=""
->>>>>>> origin/master
 function init(){
   navbar.innerHTML = "";
   navbar.appendChild(loginCont);
@@ -42,6 +38,8 @@ function init(){
 }
 
 function createSearchButton(){
+  let searchBtn = document.querySelector(".search-button")
+  searchBtn ? searchBtn.remove() : null;
   let search = document.createElement('div');
   search.className = "search-button";
   search.innerHTML = "Search";
@@ -244,12 +242,17 @@ function addUserToDB(name, user, address, phone, email){
 }
 
 function greetUser(user){
-  let userGreet = document.createElement('div');
-  userGreet.className = "user-greet";
-  userGreet.innerHTML = `Salutations, ${user.name}!`;
-  userGreet.dataset.id = user.id;
-  navbar.appendChild(userGreet);
-  createLogoutButton();
+  let originalUserGreet = document.querySelector(".user-greet")
+  if(originalUserGreet == null){
+    let userGreet = document.createElement('div');
+    userGreet.className = "user-greet";
+    userGreet.innerHTML = `Salutations, ${user.name}!`;
+    userGreet.dataset.id = user.id;
+    navbar.appendChild(userGreet);
+    createLogoutButton();
+  } else {
+    originalUserGreet.innerHTML = `Salutations, ${user.name}!`;
+  }
 }
 
 function showProfile(userId){
@@ -267,7 +270,6 @@ function getUserInfo(userId){
 }
 
 function renderUserProfile(user){
-
   profileCont.innerHTML=""
   let userProfile = document.createElement('div');
   userProfile.className = "user-profile-container";
@@ -277,17 +279,15 @@ function renderUserProfile(user){
   <p>Home Address: ${user.user.address}</p>
   <p>Phone Number: ${user.user.phone}</p>`
   profileCont.appendChild(userProfile)
-<<<<<<< HEAD
   createSearchButton();
   let profileButton = document.querySelector(".profile-button");
-  profileButton.remove();
-=======
-  jobListCont.innerHTML=""
->>>>>>> origin/master
-  renderUserJobList(user.jobs);
-  store.user_jobs.push(user.jobs);
-  createEditButton(user.user)
-  
+  profileButton ? profileButton.remove() : null;
+  createEditButton(user.user);
+  if(!jobListCont.hasChildNodes()){
+    jobListCont.innerHTML="";
+    renderUserJobList(user.jobs);
+    store.user_jobs.push(user.jobs);
+  }
 }
 
 function createEditButton(user){
@@ -302,7 +302,6 @@ function createEditButton(user){
 }
 
 function editUserForm(user){
-
   profileCont.innerHTML=""
   let editForm=document.createElement('form')
   let nameinput=document.createElement('input')
@@ -325,16 +324,13 @@ function editUserForm(user){
   submitBtn.className='submit button'
   submitBtn.innerText="Submit"
   editForm.appendChild(nameinput)
-    editForm.appendChild(usernameinput)
+  editForm.appendChild(usernameinput)
   editForm.appendChild(emailinput)
   editForm.appendChild(addressinput)
   editForm.appendChild(phoneinput)
   editForm.appendChild(submitBtn)
   editForm.addEventListener('submit',function(){
-
-
-event.preventDefault()
-
+    event.preventDefault()
     fetch(`http://localhost:3000/users/${user.id}`,{
       method:"PATCH",
       body: JSON.stringify({
@@ -355,20 +351,24 @@ event.preventDefault()
       alert('invalid input')
       editUserForm(user)
     }
-    else{
-      renderUserProfile(deb(user))
+    else {
+      user.username = usernameinput.value,
+      user.name = nameinput.value,
+      greetUser(user);
+      user.email = emailinput.value,
+      user.address = addressinput.value,
+      user.phone = phoneinput.value
+      renderUserProfile(nestUser(user));
     }
     })
   })
 profileCont.appendChild(editForm)
 }
 
-function deb(json){
-
-  let useremb={}
-  useremb.user=json
-
-  return useremb
+function nestUser(json){
+  let userEmbed = {};
+  userEmbed.user = json;
+  return userEmbed;
 }
 
 function renderUserJobList(jobs){
@@ -548,11 +548,7 @@ function renderJobDetails(job){
   links.forEach((link) => link.target = "_blank")
   setUserThenEmailBtn(jobDeets,job)
   jobDetailCont.appendChild(jobDeets);
-<<<<<<< HEAD
   jobDetailCont.classList.add("show");
-=======
-  // ;
->>>>>>> origin/master
 }
 function setUserThenEmailBtn(jobDeets,job){
   let userId = document.querySelector(".user-greet").dataset.id
@@ -674,7 +670,8 @@ function addRemoveButton(job){
   removeBtn.className = "remove-job-button";
   removeBtn.dataset.id = job.id;
   removeBtn.innerText = "Remove Job from List";
-  jobDetailCont.appendChild(removeBtn);
+  let fullDeets = document.querySelector(".job-full-details");
+  fullDeets.appendChild(removeBtn);
 }
 
 function handleRemoveButtonClicks(){
