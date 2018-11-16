@@ -76,6 +76,9 @@ animation-name: blueitup;
   font-size: 1.8em;
   font-family: 'Lobster', cursive;
 }
+.search-form {
+  margin-left: 50px;
+}
 .login-container {
   display: flex;
   margin-left: 80%;
@@ -97,13 +100,15 @@ button:hover{
 }
 .user-greet {
   margin-left: -100px;
-  margin-right: 20px;
+  margin-right: 100px;
   margin-top: -20px;
   /* font-weight: bold; */
   font-size: 1.5em;
   font-family: 'Lobster', cursive;
+  color: #AED6CB;
 }
 .log-out-button {
+  margin-left: -80px;
   margin-right: 10px;
   cursor: pointer;
   transition-property: color;
@@ -312,21 +317,28 @@ button:hover{
 .job-listing-container {
   grid-column: 2 / 3;
   grid-row: 1;
-  max-height: 38em;
+  /* height: 45em; */
   overflow: scroll;
   height: 0px;
   transition-property: height;
   transition-duration: 0.5s;
   background-color: #AED6CB;
 }
+.job-listing-container div:last-child {
+  margin-bottom: 300px;
+}
+.job-listing-container div:first-child {
+  margin-top: 15px;
+}
+
 .job-listing-container.kill {
-  height: 40em;
+  height: 50em;
 }
 .job-detail-container {
   grid-column: 3 / 6;
   grid-row: 1;
   padding-left: 10px;
-  max-height: 40em;
+  max-height: 48em;
   overflow: scroll;
   transform: translateX(200%);
   transition-property: transform;
@@ -340,7 +352,7 @@ button:hover{
 }
 .job-div {
   padding: 15px;
-  margin: 10px;
+  margin: 5px;
   background-color: white;
   border-radius: 5px;
   transition-property: background-color;
@@ -357,7 +369,7 @@ button:hover{
   padding: 5px;
   margin: 10px; */
   padding: 15px;
-  margin: 10px;
+  margin: 5px;
   background-color: white;
   border-radius: 5px;
   transition-property: background-color;
@@ -374,9 +386,6 @@ button:hover{
 }
 .user-profile-container small {
   margin-top: -5px;
-}
-.job-detail-container {
-  margin-left: 3em;
 }
 .job-detail-container img {
   max-width: 500px;

@@ -7,9 +7,13 @@ const searchCont = document.querySelector(".search-container");
 const jobListCont = document.querySelector(".job-listing-container");
 const profileCont = document.querySelector(".user-profile-container");
 const jobDetailCont = document.querySelector(".job-detail-container");
+<<<<<<< HEAD
 const userFormCont = document.querySelector(".user-form-container");
 const presImage = document.querySelector(".big-image")
 
+=======
+let user=""
+>>>>>>> origin/master
 function init(){
   navbar.innerHTML = "";
   navbar.appendChild(loginCont);
@@ -263,6 +267,8 @@ function getUserInfo(userId){
 }
 
 function renderUserProfile(user){
+
+  profileCont.innerHTML=""
   let userProfile = document.createElement('div');
   userProfile.className = "user-profile-container";
   userProfile.innerHTML = `<h2>${user.user.name}</h2>
@@ -271,11 +277,98 @@ function renderUserProfile(user){
   <p>Home Address: ${user.user.address}</p>
   <p>Phone Number: ${user.user.phone}</p>`
   profileCont.appendChild(userProfile)
+<<<<<<< HEAD
   createSearchButton();
   let profileButton = document.querySelector(".profile-button");
   profileButton.remove();
+=======
+  jobListCont.innerHTML=""
+>>>>>>> origin/master
   renderUserJobList(user.jobs);
   store.user_jobs.push(user.jobs);
+  createEditButton(user.user)
+  
+}
+
+function createEditButton(user){
+  let editBtn= document.createElement('button')
+  editBtn.className="edit-button"
+  editBtn.innerText="Edit Profile"
+  editBtn.addEventListener('click',function(e){
+    e.preventDefault()
+    editUserForm(user)
+  })
+  profileCont.appendChild(editBtn)
+}
+
+function editUserForm(user){
+
+  profileCont.innerHTML=""
+  let editForm=document.createElement('form')
+  let nameinput=document.createElement('input')
+  nameinput.className="name-edit"
+  nameinput.value=`${user.name}`
+  let usernameinput=document.createElement('input')
+  usernameinput.className="username-edit"
+  usernameinput.value=`${user.username}`
+  let emailinput=document.createElement('input')
+  emailinput.className="email-edit"
+  emailinput.value=`${user.email}`
+  let addressinput=document.createElement('input')
+  addressinput.className="address-edit"
+  addressinput.value=`${user.address}`
+  let phoneinput=document.createElement('input')
+  phoneinput.className="phone-edit"
+  phoneinput.value=`${user.phone}`
+  let submitBtn=document.createElement('button')
+  submitBtn.type="submit"
+  submitBtn.className='submit button'
+  submitBtn.innerText="Submit"
+  editForm.appendChild(nameinput)
+    editForm.appendChild(usernameinput)
+  editForm.appendChild(emailinput)
+  editForm.appendChild(addressinput)
+  editForm.appendChild(phoneinput)
+  editForm.appendChild(submitBtn)
+  editForm.addEventListener('submit',function(){
+
+
+event.preventDefault()
+
+    fetch(`http://localhost:3000/users/${user.id}`,{
+      method:"PATCH",
+      body: JSON.stringify({
+        username:usernameinput.value,
+        name:nameinput.value,
+        email:emailinput.value,
+        address:addressinput.value,
+        phone:phoneinput.value
+
+      }),
+      headers: {
+        "content-type": "application/json",
+        "accepts": "application/json"
+      }
+    }).then(res=>res.json())
+    .then(json =>{
+    if(json.error){
+      alert('invalid input')
+      editUserForm(user)
+    }
+    else{
+      renderUserProfile(deb(user))
+    }
+    })
+  })
+profileCont.appendChild(editForm)
+}
+
+function deb(json){
+
+  let useremb={}
+  useremb.user=json
+
+  return useremb
 }
 
 function renderUserJobList(jobs){
@@ -453,9 +546,58 @@ function renderJobDetails(job){
   }
   let links = jobDeets.querySelectorAll('a:last-of-type')
   links.forEach((link) => link.target = "_blank")
+  setUserThenEmailBtn(jobDeets,job)
   jobDetailCont.appendChild(jobDeets);
+<<<<<<< HEAD
   jobDetailCont.classList.add("show");
+=======
+  // ;
+>>>>>>> origin/master
 }
+function setUserThenEmailBtn(jobDeets,job){
+  let userId = document.querySelector(".user-greet").dataset.id
+   fetch(`http://localhost:3000/users/find/${userId}`)
+  .then (res=>res.json())
+  .then (json => createEmailBtn(jobDeets,json,job))
+}
+
+function createEmailBtn(jobDeets,user,job){
+let subject=`${job.title} at ${job.company}`
+let body=jobBody(job)
+
+//
+  let emailBtn=document.createElement('button')
+  emailBtn.className="email-button"
+  emailBtn.innerText="Email this Job"
+  emailBtn.dataset.id=job.id
+
+  jobDeets.appendChild(emailBtn)
+
+  emailBtn.addEventListener('click',function(){
+
+fetch(`http://localhost:3000/users/email/${user.user.id}`,{
+  method:"POST",
+  body: JSON.stringify({
+    username:subject,
+    name:body
+  }),
+  headers: {
+    "content-type": "application/json",
+    "accepts": "application/json"
+  }
+}).then(alert('Job Emailed'))
+
+jobDeets.appendChild(emailBtn)
+  })
+}
+
+
+function jobBody(job){
+let body= "Job Title: "+ job.title + "\n" + "Company: "+ job.company + "\n" + "Location: "+ job.location + "\n" + "Type: "+job.jobType + "\n" + "Description:"+ job.description + "\n" +"Company URL: "+job.companyUrl
+body=body.replace(/<(.|\n)*?>/g,'')
+return body
+}
+
 
 function handleSaveButtonClicks(){
   jobDetailCont.addEventListener('click', function(e){
